@@ -1,0 +1,35 @@
+[project]
+name = "pyskelv3-service"
+version = "0.1.0"
+description = "Template v3."
+authors = [{ name = "Jonathan González", email = "ea1het@ea1het.com" }]
+license = { text = "Mozilla Public License Version 2.0" }
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "flask (>=3.1.2,<4.0.0)",
+    "psycopg2-binary (>=2.9.11,<3.0.0)",
+    "redis (>=7.1.0,<8.0.0)",
+    "marshmallow (>=4.1.0,<5.0.0)",
+    "python-dotenv (>=1.2.1,<2.0.0)",
+    "bcrypt (>=5.0.0,<6.0.0)",
+]
+
+[tool.poetry]
+package-mode = false
+packages = [{ include = "skel_v3", from = "src" }]
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^9.0.1"
+mypy = "^1.18.2"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+
+[tool.semantic_release]
+branch = "main"
+version_variables = ["src/*/__init__.py:__version__"]
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

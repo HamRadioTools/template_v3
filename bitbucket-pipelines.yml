@@ -1,0 +1,42 @@
+image: atlassian/default-image:4
+
+definitions:
+  services:
+    docker: # Define a custom docker daemon - can only be used with a self-hosted runner
+      image: docker:dind
+
+  steps:
+    - step: &build_and_push_docker_image
+        name: Build and Push Docker Image
+        services:
+          - docker
+        oidc: true
+        runs-on:
+          - linux
+          - self.hosted
+          - m92p
+        script:
+          - export AWS_REGION=$CI_AWS_REGION
+          - export AWS_ROLE_ARN=$CI_AWS_ASSUMEROLE
+          - export AWS_WEB_IDENTITY_TOKEN_FILE=$(pwd)/web-identity-token
+          - echo $BITBUCKET_STEP_OIDC_TOKEN > $(pwd)/web-identity-token
+          - export PRG_VER="$(grep '__version__' src/*/__init__.py | sed -E 's/.*__version__\s*=\s*"([^"]+)".*/\1/')"
+          - apt update && apt install -y curl unzip
+          - curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+          - unzip awscliv2.zip
+          - ./aws/install
+          - curl -fsSLO https://github.com/docker/buildx/releases/download/v$CI_DOCKER_BUILDXVER/buildx-v$CI_DOCKER_BUILDXVER.linux-amd64
+          - mkdir -p $HOME/.docker/cli-plugins/ && mv buildx-v$CI_DOCKER_BUILDXVER.linux-amd64 $HOME/.docker/cli-plugins/docker-buildx && chmod +x ~/.docker/cli-plugins/docker-buildx
+          - docker run --rm --privileged multiarch/qemu-user-static --reset -p yes
+          - docker buildx create --use
+          - aws ecr get-login-password --region $CI_AWS_REGION | docker login --username AWS --password-stdin $CI_AWS_ACCOUNTID.dkr.ecr.$CI_AWS_REGION.amazonaws.com
+          - docker buildx build -t $CI_AWS_ACCOUNTID.dkr.ecr.$CI_AWS_REGION.amazonaws.com/$CI_AWS_ECRREPO:$PRG_VER --platform $CI_DOCKER_BUILDXDST --push -f iac/docker/$CI_DOCKER_TYPE.dockerfile .
+
+pipelines:
+  custom:
+    Build-and-Push-Docker-Image:
+      - step: *build_and_push_docker_image
+
+  branches:
+    main:
+      - step: *build_and_push_docker_image
