@@ -5,10 +5,17 @@
 
 """Configuration module"""
 
-__updated__ = "2026-02-07 07:13:47"
+__updated__ = "2026-03-03 01:04:39"
 
 import os
 from dotenv import load_dotenv, find_dotenv
+
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Centralizes environment-driven runtime configuration for API and worker modes.
+#
+# -----------------------------------------------------------------------------
 
 
 # Load .env if present (ideal for local development).
@@ -17,9 +24,14 @@ load_dotenv(find_dotenv())
 
 
 def str_to_bool(value: str | None, default: bool = True) -> bool:
-    """
-    Convert strings like "true"/"false"/"1"/"0" to boolean values.
-    If value is None, return the provided default.
+    """Convert environment-like text to boolean predictably.
+
+    Inputs:
+    - value: text to evaluate (`"true"`, `"1"`, etc.) or `None`.
+    - default: fallback value when `value` is not defined.
+
+    Returns:
+    - `True` o `False` según el contenido recibido.
     """
     if value is None:
         return default
@@ -27,9 +39,13 @@ def str_to_bool(value: str | None, default: bool = True) -> bool:
 
 
 def get_config() -> dict:
-    """
-    Return the 12-factor configuration as a simple dict.
-    Valid for both API and worker modes.
+    """Build the runtime configuration map from environment variables.
+
+    Inputs:
+    - No parameters; reads process environment state.
+
+    Returns:
+    - Dictionary with service, runtime, logging, and datastore settings.
     """
 
     # --- Service environment ---
@@ -47,6 +63,11 @@ def get_config() -> dict:
         # - api: run the Flask API
         # - worker: run the worker
         "APP_TYPE": os.getenv("APP_TYPE", "api"),
+        # --- Worker ---
+        # - oneshot: run one unit of work and exit
+        # - loop: run work repeatedly until stopped by signal
+        "WORKER_MODE": os.getenv("WORKER_MODE", "oneshot"),
+        "WORKER_POLL_INTERVAL": int(os.getenv("WORKER_POLL_INTERVAL", "5")),
         # --- Service ---
         "SERVICE_NAME": os.getenv("SERVICE_NAME", "skel-service"),
         "SERVICE_VERSION": os.getenv("SERVICE_VERSION", "0.1.0"),

@@ -13,6 +13,13 @@ import re
 from datetime import datetime, timezone
 from typing import Any, Dict, Optional
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Implements JSON stdout logging format with optional contextual enrichment.
+#
+# -----------------------------------------------------------------------------
+
 ANSI_ESCAPE_RE = re.compile(r"\x1B\[[0-?]*[ -/]*[@-~]")
 WERKZEUG_REQUEST_RE = re.compile(r"\"([A-Z]+ .+?)\"")
 
@@ -34,11 +41,29 @@ class JsonStdoutHandler(logging.StreamHandler):
         *args,
         **kwargs,
     ) -> None:
+        """Configura el handler JSON con metadatos de servicio.
+
+        Entradas:
+        - service_name: nombre lógico del servicio para enriquecer logs.
+        - environment: entorno de ejecución (`local`, `dev`, `prod`, ...).
+        - *args, **kwargs: argumentos base del `StreamHandler`.
+
+        Devuelve:
+        - `None`.
+        """
         super().__init__(*args, **kwargs)
         self.service_name = service_name
         self.environment = environment
 
     def emit(self, record: logging.LogRecord) -> None:
+        """Serializa un `LogRecord` en JSON y lo escribe en stdout.
+
+        Entradas:
+        - record: evento de logging generado por el código de aplicación.
+
+        Devuelve:
+        - `None`.
+        """
         try:
             # Timestamp in UTC with ISO8601 format
             ts = datetime.fromtimestamp(record.created, tz=timezone.utc)

@@ -13,6 +13,13 @@ from typing import Any, Optional
 import psycopg2
 from psycopg2 import pool
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Encapsulates Postgres connection-pool bootstrap and fail-open behavior.
+#
+# -----------------------------------------------------------------------------
+
 LOGGER = logging.getLogger(__name__)
 
 minconn = 1  # Minimum number of connections to keep in the pool
@@ -20,9 +27,14 @@ maxconn = 20  # Maximum number of connections to keep in the pool
 
 
 def create_pg_pool(config: dict) -> Optional[Any]:
-    """
-    Create a psycopg2 SimpleConnectionPool based on configuration.
-    Return None if connection fails so the service can fail-open.
+    """Create the PostgreSQL connection pool for the service.
+
+    Inputs:
+    - config: settings with host, port, credentials, and pool sizing.
+
+    Returns:
+    - `SimpleConnectionPool` when connection succeeds.
+    - `None` when connection cannot be established (startup fail-open behavior).
     """
     try:
         return pool.SimpleConnectionPool(

@@ -5,21 +5,31 @@
 
 """LOGGING WITH FORMAT TO STDOUT"""
 
-__updated__ = "2026-02-07 07:16:21"
+__updated__ = "2026-03-02 17:25:00"
 
 import logging
 
-from .formatter import JsonStdoutHandler
+from logs.formatter import JsonStdoutHandler
+
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Initializes process-wide structured logging with deterministic handler setup.
+#
+# -----------------------------------------------------------------------------
 
 
 def init_logging(config: dict) -> None:
-    """
-    Configure global logging:
-    - Log level taken from config["LOG_LEVEL"]
-    - Single JsonStdoutHandler writing to STDOUT
+    """Initialize process-wide logging in JSON format.
+
+    Inputs:
+    - config: dictionary with `LOG_LEVEL`, `SERVICE_NAME`, and `SERVICE_ENV`.
+
+    Returns:
+    - `None`.
     """
     level_name = config.get("LOG_LEVEL", "INFO").upper()
-    service_name = config.get("SERVICE_NAME", "micro-service")
+    service_name = config.get("SERVICE_NAME", "skel-service")
     environment = config.get("SERVICE_ENV", "local")
 
     root = logging.getLogger()
@@ -31,3 +41,13 @@ def init_logging(config: dict) -> None:
 
     handler = JsonStdoutHandler(service_name=service_name, environment=environment)
     root.addHandler(handler)
+
+    logging.getLogger(__name__).info(
+        "Logging initialized",
+        extra={
+            "operation": "logging_init",
+            "io_phase": "after",
+            "io_target": "stdout",
+            "outcome": "ok",
+        },
+    )

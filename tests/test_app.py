@@ -13,9 +13,24 @@ import pytest
 from skel_v3.app import create_api_app
 from skel_v3.config import get_config
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Verifies API bootstrap and baseline config behavior with external stores off.
+#
+# -----------------------------------------------------------------------------
+
 
 @pytest.fixture
 def client():
+    """Build a Flask test client with external datastores disabled.
+
+    Inputs:
+    - No direct parameters.
+
+    Returns:
+    - Test `FlaskClient` yielded by the fixture.
+    """
     config = get_config()
     config["APP_TYPE"] = "api"
     config["PG_ENABLED"] = False
@@ -28,6 +43,14 @@ def client():
 
 
 def test_health(client):
+    """Validate that `/health` returns the expected JSON with status 200.
+
+    Inputs:
+    - client: fixture providing HTTP test client.
+
+    Returns:
+    - `None`.
+    """
     resp = client.get("/health")
     assert resp.status_code == 200
     assert resp.content_type == "application/json"
@@ -36,8 +59,13 @@ def test_health(client):
 
 
 def test_get_config_defaults_to_api(monkeypatch):
-    """
-    Ensure the configuration defaults to APP_TYPE=api when env var is missing.
+    """Check that default `APP_TYPE` is `api` when env var is missing.
+
+    Inputs:
+    - monkeypatch: pytest fixture used to manipulate environment variables.
+
+    Returns:
+    - `None`.
     """
     monkeypatch.delenv("APP_TYPE", raising=False)
     config = get_config()

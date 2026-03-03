@@ -10,6 +10,13 @@ __updated__ = "2026-02-01 04:06:41"
 import re
 from pathlib import Path
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Keeps project version metadata synchronized between package and pyproject.
+#
+# -----------------------------------------------------------------------------
+
 init_file = next(Path("src").glob("*/__init__.py"))
 pyproject_file = Path("pyproject.toml")
 

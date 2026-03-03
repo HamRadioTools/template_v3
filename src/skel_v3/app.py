@@ -5,7 +5,7 @@
 
 """Main app module"""
 
-__updated__ = "2026-02-07 08:00:28"
+__updated__ = "2026-03-02 17:25:00"
 
 import logging
 import sys
@@ -19,6 +19,14 @@ from logs import init_logging
 from api.example import register_example_routes
 from api.health import register_health_routes
 from util.request_id import get_or_create_request_id
+from worker import run_worker_app
+
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Composition root that dispatches API vs worker runtime and wires dependencies.
+#
+# -----------------------------------------------------------------------------
 
 
 ###############################################################################
@@ -29,8 +37,13 @@ from util.request_id import get_or_create_request_id
 
 
 def create_api_app(config: dict) -> Flask:
-    """
-    Create the Flask app with logging and datastores initialized.
+    """Build the Flask application ready to serve requests.
+
+    Inputs:
+    - config: global runtime configuration (logging, environment, datastores).
+
+    Returns:
+    - A `Flask` instance with base middleware and routes registered.
     """
     init_logging(config)
 
@@ -41,6 +54,14 @@ def create_api_app(config: dict) -> Flask:
 
     @app.before_request
     def _log_request_start():
+        """Initialize request tracing metadata at request start.
+
+        Inputs:
+        - No explicit parameters; uses the active Flask request context.
+
+        Returns:
+        - `None`.
+        """
         g.request_started_at = time.perf_counter()
         get_or_create_request_id()
 
@@ -52,8 +73,13 @@ def create_api_app(config: dict) -> Flask:
 
     @app.route("/", methods=["GET"])
     def root():
-        """
-        HATEOAS-style discovery endpoint for automatic clients.
+        """Expose a discovery document with API links.
+
+        Inputs:
+        - No explicit parameters; operates on the current request context.
+
+        Returns:
+        - JSON response with service metadata and available links.
         """
         discovery = {
             "service": metadata["service"],
@@ -97,15 +123,22 @@ def create_api_app(config: dict) -> Flask:
 
 
 def main() -> None:
-    """
-    Main entry point: decide whether to launch the API or worker.
+    """Process entrypoint for API mode or worker mode.
+
+    Inputs:
+    - No parameters; reads runtime configuration from environment.
+
+    Returns:
+    - `None`. Starts the selected runtime or exits on invalid configuration.
     """
     config = get_config()
-    app_type = config.get("APP_TYPE", "api")  # this can be api or worker
+    app_type = config.get("APP_TYPE", "api")
 
     if app_type == "api":
         app = create_api_app(config)
         app.run(host="0.0.0.0", port=9000)
+    elif app_type == "worker":
+        run_worker_app(config)
     else:
         # Fail fast but with a clear message
         logging.basicConfig(level=logging.ERROR)
@@ -114,6 +147,18 @@ def main() -> None:
             app_type,
         )
         sys.exit(2)
+
+
+def app_factory() -> Flask:
+    """Gunicorn app factory compatible with `--factory`.
+
+    Inputs:
+    - No parameters.
+
+    Returns:
+    - Configured `Flask` instance for WSGI server execution.
+    """
+    return create_api_app(get_config())
 
 
 ###############################################################################

@@ -10,6 +10,13 @@ __updated__ = "2026-02-01 03:57:17"
 
 from marshmallow import Schema, fields, validate
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Declares request/response schema primitives used by API handlers.
+#
+# -----------------------------------------------------------------------------
+
 
 class AuthRequestSchema(Schema):
     username = fields.Str(

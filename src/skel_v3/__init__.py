@@ -10,4 +10,11 @@ __version__ = "0.1.0"
 __all__ = []
 
 # Expose get_config at package level if useful
-from .config import get_config  # noqa: F401
+from config import get_config  # noqa: F401
+
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Defines package-level metadata and the minimal public export surface.
+#
+# -----------------------------------------------------------------------------

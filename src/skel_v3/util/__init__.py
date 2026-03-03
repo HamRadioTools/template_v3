@@ -7,7 +7,13 @@
 
 __updated__ = "2025-12-07 01:45:30"
 
-from .apikeys import is_valid_apikey
+from util.apikeys import is_valid_apikey
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Defines utility package exports intended for cross-module reuse.
+#
+# -----------------------------------------------------------------------------
 
 __all__ = ["is_valid_apikey"]

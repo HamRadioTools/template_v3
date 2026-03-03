@@ -9,11 +9,22 @@ __updated__ = "2025-12-07 01:44:17"
 
 import redis
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Creates reusable Redis pool/client objects from runtime configuration.
+#
+# -----------------------------------------------------------------------------
+
 
 def create_redis_pool(config: dict) -> redis.ConnectionPool:
-    """
-    Create a Redis connection pool from the provided config.
-    If REDIS_PASSWORD is None, connect without authentication.
+    """Build a reusable Redis connection pool.
+
+    Inputs:
+    - config: settings with host, port, db, password, and connection limits.
+
+    Returns:
+    - Instancia `redis.ConnectionPool` lista para crear clientes.
     """
     password = config.get("REDIS_PASSWORD") or None
 
@@ -28,4 +39,12 @@ def create_redis_pool(config: dict) -> redis.ConnectionPool:
 
 
 def create_redis_client(pool: redis.ConnectionPool) -> redis.Redis:
+    """Create a Redis client from an existing pool.
+
+    Inputs:
+    - pool: shared pool built by `create_redis_pool`.
+
+    Returns:
+    - `redis.Redis` instance bound to the given pool.
+    """
     return redis.Redis(connection_pool=pool)

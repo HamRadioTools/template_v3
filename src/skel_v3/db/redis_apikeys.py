@@ -36,13 +36,24 @@ import json
 import redis
 from typing import Optional, Dict
 
+# -----------------------------------------------------------------------------
+#
+# Module design notes:
+# Resolves API-key metadata from Redis and normalizes typed fields for callers.
+#
+# -----------------------------------------------------------------------------
+
 
 def get_apikey_metadata(r: redis.Redis, apikey: str) -> Optional[Dict]:
-    """
-    Return a dict with API key metadata if present and enabled,
-    or None if it does not exist or is disabled.
+    """Load and normalize metadata for an API key stored in Redis.
 
-    r: existing Redis client (redis.Redis)
+    Inputs:
+    - r: authenticated Redis client.
+    - apikey: API key identifier from request header.
+
+    Returns:
+    - Typed metadata dictionary when the key exists and is active.
+    - `None` when the key is missing, disabled, or empty.
     """
     if not apikey:
         return None
