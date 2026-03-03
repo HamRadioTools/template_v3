@@ -12,7 +12,20 @@ import redis
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Creates reusable Redis pool/client objects from runtime configuration.
+# Redis connection bootstrap helpers.
+#
+# Responsibilities:
+# - Build connection pools from runtime config.
+# - Build client objects bound to shared pools.
+# - Keep Redis connectivity concerns centralized and reusable.
+#
+# Scope boundaries:
+# - No command-level read/write logic.
+# - No retry loops or circuit-breaker behavior in this module.
+#
+# Extension guidance:
+# - Add connectivity options here before using them in application code.
+# - Keep client construction deterministic and side-effect free.
 #
 # -----------------------------------------------------------------------------
 

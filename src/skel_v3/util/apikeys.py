@@ -13,7 +13,19 @@ from typing import Optional
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Provides small, explicit API-key validation helpers for handlers/middleware.
+# Minimal API-key helper primitives.
+#
+# Responsibilities:
+# - Provide explicit equality-based API-key checks.
+# - Keep validation logic readable and easy to test.
+#
+# Scope boundaries:
+# - No datastore lookups or cryptographic transformations here.
+# - No request/response behavior in this module.
+#
+# Extension guidance:
+# - Add additional helper functions only when they remain generic and reusable.
+# - Keep this module free from service-specific policy branching.
 #
 # -----------------------------------------------------------------------------
 

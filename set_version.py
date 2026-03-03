@@ -13,7 +13,20 @@ from pathlib import Path
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Keeps project version metadata synchronized between package and pyproject.
+# This utility keeps project version metadata synchronized across the template.
+#
+# Responsibilities:
+# - Read `__version__` from the package root `src/*/__init__.py`.
+# - Update the `version` field in `pyproject.toml`.
+# - Fail fast with explicit messages when expected files are missing.
+#
+# Scope boundaries:
+# - It only updates version metadata.
+# - It does not rename packages, edit lock files, or modify runtime config.
+#
+# Operational notes:
+# - Intended for release/setup automation.
+# - Safe to run repeatedly; output reflects the currently discovered version.
 #
 # -----------------------------------------------------------------------------
 

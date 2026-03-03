@@ -16,7 +16,20 @@ from skel_v3.config import get_config
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Verifies API bootstrap and baseline config behavior with external stores off.
+# Baseline tests for app bootstrap and configuration defaults.
+#
+# Responsibilities:
+# - Validate health endpoint response contract.
+# - Validate fallback behavior for missing `APP_TYPE`.
+# - Keep tests deterministic by disabling external datastores.
+#
+# Scope boundaries:
+# - No integration coverage for Postgres/Redis/SMTP in this module.
+# - Focused on lightweight unit-level behavior only.
+#
+# Maintenance guidance:
+# - Keep tests small, direct, and behavior-oriented.
+# - Add new tests when bootstrap contracts change.
 #
 # -----------------------------------------------------------------------------
 

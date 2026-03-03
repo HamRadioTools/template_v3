@@ -16,7 +16,20 @@ from psycopg2 import pool
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Encapsulates Postgres connection-pool bootstrap and fail-open behavior.
+# PostgreSQL pool bootstrap with explicit fail-open startup behavior.
+#
+# Responsibilities:
+# - Build `psycopg2` connection pool from runtime settings.
+# - Encapsulate connection details away from callers.
+# - Provide clear warnings when database connectivity is unavailable.
+#
+# Scope boundaries:
+# - No SQL execution or transaction management.
+# - No schema migration responsibilities in this module.
+#
+# Operational guidance:
+# - Designed to avoid hard crashes on PG outages during startup.
+# - Callers must handle `None` pool gracefully when database is optional.
 #
 # -----------------------------------------------------------------------------
 

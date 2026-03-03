@@ -14,7 +14,19 @@ from logs.setup import init_logging
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Exposes logging bootstrap helpers as the package public logging interface.
+# Logging package public interface.
+#
+# Responsibilities:
+# - Re-export logging bootstrap utilities for simple imports.
+# - Keep logger setup entrypoints centralized and discoverable.
+#
+# Scope boundaries:
+# - No formatter implementation or runtime bootstrap logic here.
+# - This initializer should remain thin and stable.
+#
+# Maintenance guidance:
+# - Only export symbols intended for broad package consumption.
+# - Avoid side effects beyond controlled imports.
 #
 # -----------------------------------------------------------------------------
 

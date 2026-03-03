@@ -12,7 +12,19 @@ from util.apikeys import is_valid_apikey
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Defines utility package exports intended for cross-module reuse.
+# Utility package public interface.
+#
+# Responsibilities:
+# - Re-export small utility helpers used across modules.
+# - Keep package-level imports stable for call sites.
+#
+# Scope boundaries:
+# - No utility implementation logic here.
+# - Keep import side effects minimal.
+#
+# Maintenance guidance:
+# - Export only helpers that are intentionally shared.
+# - Avoid turning this file into a catch-all dependency hub.
 #
 # -----------------------------------------------------------------------------
 

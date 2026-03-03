@@ -14,7 +14,20 @@ from db.redis_pool import create_redis_pool, create_redis_client
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Builds datastore handles from config and returns them as runtime dependencies.
+# Datastore bootstrap boundary for PostgreSQL and Redis dependencies.
+#
+# Responsibilities:
+# - Initialize configured datastore clients/pools.
+# - Return a consistent dependency dictionary consumed by API/worker modules.
+# - Respect enable/disable flags so local/test runs stay lightweight.
+#
+# Scope boundaries:
+# - No business queries or schema management here.
+# - Creation only; operational query logic belongs in repository layers.
+#
+# Extension guidance:
+# - Add new datastore handles under explicit keys.
+# - Keep initialization deterministic and side-effect minimal.
 #
 # -----------------------------------------------------------------------------
 

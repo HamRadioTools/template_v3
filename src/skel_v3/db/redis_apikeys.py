@@ -39,7 +39,20 @@ from typing import Optional, Dict
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Resolves API-key metadata from Redis and normalizes typed fields for callers.
+# Redis API-key metadata reader and normalizer.
+#
+# Responsibilities:
+# - Read hash data for a provided API key.
+# - Enforce disabled-key semantics.
+# - Normalize numeric and JSON fields for predictable downstream usage.
+#
+# Scope boundaries:
+# - Read-only behavior; no key creation/update in this module.
+# - No HTTP response handling; callers map outcomes to transport semantics.
+#
+# Operational guidance:
+# - Returns `None` for any non-authorized key state.
+# - Treat malformed JSON payloads as empty safe defaults.
 #
 # -----------------------------------------------------------------------------
 

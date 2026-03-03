@@ -13,7 +13,19 @@ from marshmallow import Schema, fields, validate
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Declares request/response schema primitives used by API handlers.
+# Marshmallow schemas used by API handlers for input normalization.
+#
+# Responsibilities:
+# - Define schema fields and validation constraints.
+# - Keep request-shape contracts explicit and testable.
+#
+# Scope boundaries:
+# - No HTTP transport logic and no datastore access.
+# - Business orchestration belongs in handlers/services, not schema classes.
+#
+# Extension guidance:
+# - Prefer adding focused schemas per endpoint/use case.
+# - Keep regex and field constraints readable and well-scoped.
 #
 # -----------------------------------------------------------------------------
 

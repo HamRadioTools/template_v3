@@ -29,27 +29,49 @@ The template is spec-driven: implementation should follow `openspec/`.
 
 ## Configuration
 
-Core:
-- `APP_TYPE`: `api` (default) or `worker`
-- `SERVICE_ENV`: environment name (`local`, `dev`, `prod`, ...)
-- `SERVICE_NAME`: service identifier in logs
-- `SERVICE_VERSION`: service version metadata
-- `LOG_LEVEL`: root log level
+### Runtime variables (`src/skel_v3/config.py`)
+
+Execution and worker:
+- `APP_TYPE` (default: `api`): `api` or `worker`
+- `WORKER_MODE` (default: `oneshot`): `oneshot` or `loop`
+- `WORKER_POLL_INTERVAL` (default: `5`): loop sleep interval in seconds
+
+Service metadata:
+- `SERVICE_NAME` (default: `skel-service`)
+- `SERVICE_VERSION` (default: `0.1.0`)
+- `SERVICE_NAMESPACE` (default: `default`)
+- `SERVICE_ENV` (default: `local`)
+
+Logging:
+- `LOG_LEVEL` (default: `DEBUG` in `local/dev`, `INFO` otherwise)
+
+Postgres:
+- `PG_ENABLED` (default: `false`)
+- `PG_HOST` (default: `postgres`)
+- `PG_PORT` (default: `5432`)
+- `PG_USER` (default: `postgres`)
+- `PG_PASSWORD` (default: `postgres`)
+- `PG_DBNAME` (default: `postgres`)
+- `PG_MIN_CONN` (default: `1`)
+- `PG_MAX_CONN` (default: `5`)
+- `PG_SSLMODE` is currently not active in code (left as commented placeholder in `.env`)
+
+Redis:
+- `REDIS_ENABLED` (default: `false`)
+- `REDIS_HOST` (default: `redis`)
+- `REDIS_PORT` (default: `6379`)
+- `REDIS_DB` (default: `0`)
+- `REDIS_PASSWORD` (default: empty/`None`)
+- `REDIS_MAX_CONN` (default: `20`)
+
+### Entrypoint/container variables (`entrypoint.sh`)
+
+API:
+- `GUNIPORT` (default: `9000`)
+- `GUNICORN_APP` (default: `skel_v3.app:app_factory`)
 
 Worker:
-- `WORKER_MODE`: `oneshot` (default) or `loop`
-- `WORKER_POLL_INTERVAL`: interval in seconds for loop mode (default `5`)
-
-API container:
-- `GUNIPORT`: Gunicorn bind port (default `9000`)
-- `GUNICORN_APP`: factory target (default `skel_v3.app:app_factory`)
-
-Worker container:
-- `WORKER_TARGET`: python module target (default `skel_v3.app`)
-
-Datastores:
-- `PG_*`: PostgreSQL connectivity/pool
-- `REDIS_*`: Redis connectivity/pool
+- `WORKER_TARGET` (default: `skel_v3.app`)
 
 ## Runtime Behavior
 

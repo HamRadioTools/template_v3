@@ -20,7 +20,20 @@ from util.request_id import get_or_create_request_id
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Houses reusable decorators for timing, error handling, and API-key gating.
+# Reusable decorators for handler instrumentation and guard rails.
+#
+# Responsibilities:
+# - Provide timing instrumentation decorator.
+# - Provide exception-to-HTTP error mapping decorator.
+# - Provide API-key gate decorator backed by Redis metadata lookups.
+#
+# Scope boundaries:
+# - Decorators stay generic and transport-focused.
+# - Business authorization policy should be implemented elsewhere.
+#
+# Operational guidance:
+# - Designed for Flask handlers but can be adapted for similar call shapes.
+# - Logging includes request context to aid incident triage.
 #
 # -----------------------------------------------------------------------------
 

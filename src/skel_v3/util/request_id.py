@@ -13,7 +13,20 @@ from flask import request, g
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Provides per-request correlation ID resolution and caching via Flask context.
+# Request correlation ID resolver for Flask request scope.
+#
+# Responsibilities:
+# - Reuse inbound `X-Request-ID` when provided.
+# - Generate UUID fallback when no inbound ID exists.
+# - Cache the resolved value on `flask.g` for per-request stability.
+#
+# Scope boundaries:
+# - No persistence or distributed tracing integration here.
+# - No header mutation beyond read access.
+#
+# Operational guidance:
+# - Intended to be called early in request lifecycle (for example `before_request`).
+# - Helps correlate logs across handlers and middleware.
 #
 # -----------------------------------------------------------------------------
 

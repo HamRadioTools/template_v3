@@ -3,6 +3,20 @@
 
 # pylint: disable=W0102,E0712,C0103,R0903
 
+"""Functional worker runtime helpers."""
+
+from __future__ import annotations
+
+__updated__ = "2026-03-03 02:11:26"
+
+import logging
+import signal
+import time
+from typing import Any
+
+from db import init_datastores
+from logs import init_logging
+
 # -----------------------------------------------------------------------------
 #
 # Worker runtime design and operations guide
@@ -29,27 +43,6 @@
 # - Use ``loop`` only when continuous polling is required by the workload.
 # - Keep `_perform_work` idempotent and deterministic when possible.
 # - Do not log secrets; use structured metadata in log `extra` fields.
-#
-# -----------------------------------------------------------------------------
-
-"""Functional worker runtime helpers."""
-
-from __future__ import annotations
-
-__updated__ = "2026-03-02 17:25:00"
-
-import logging
-import signal
-import time
-from typing import Any
-
-from db import init_datastores
-from logs import init_logging
-
-# -----------------------------------------------------------------------------
-#
-# Module design notes:
-# Implements worker lifecycle orchestration for one-shot and loop execution.
 #
 # -----------------------------------------------------------------------------
 

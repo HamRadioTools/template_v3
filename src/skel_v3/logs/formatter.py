@@ -16,7 +16,20 @@ from typing import Any, Dict, Optional
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Implements JSON stdout logging format with optional contextual enrichment.
+# JSON formatter/handler implementation for stdout logs.
+#
+# Responsibilities:
+# - Convert `LogRecord` objects into structured JSON lines.
+# - Attach service/env metadata and selected contextual fields.
+# - Normalize formatting artifacts (ANSI codes, Werkzeug request strings).
+#
+# Scope boundaries:
+# - No logger level policy or handler wiring decisions.
+# - Keep transport concerns limited to stdout stream emission.
+#
+# Operational guidance:
+# - Output is optimized for log aggregation pipelines.
+# - Exceptions are serialized with stack traces for postmortem analysis.
 #
 # -----------------------------------------------------------------------------
 

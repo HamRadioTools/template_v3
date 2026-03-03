@@ -14,7 +14,20 @@ from logs.formatter import JsonStdoutHandler
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Initializes process-wide structured logging with deterministic handler setup.
+# Logging bootstrap for process-wide structured output.
+#
+# Responsibilities:
+# - Configure root logger level from runtime config.
+# - Remove previously attached handlers to prevent duplicate emissions.
+# - Attach JSON stdout handler with service/environment metadata.
+#
+# Scope boundaries:
+# - No business-domain logging logic.
+# - No per-request logging policy in this module.
+#
+# Operational guidance:
+# - Safe to call during startup paths in both API and worker modes.
+# - Designed to produce deterministic output shape across runtimes.
 #
 # -----------------------------------------------------------------------------
 

@@ -24,7 +24,21 @@ from worker import run_worker_app
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Composition root that dispatches API vs worker runtime and wires dependencies.
+# Main composition root for API and worker process modes.
+#
+# Responsibilities:
+# - Read runtime mode (`APP_TYPE`) and dispatch to API or worker execution.
+# - Build Flask app with logging, datastore wiring, and route registration.
+# - Expose an app factory for Gunicorn `--factory` startup.
+#
+# Scope boundaries:
+# - Keep business rules out of this module.
+# - Treat this file as bootstrap/orchestration only.
+#
+# Operational guidance:
+# - Use `APP_TYPE=api` for HTTP service instances.
+# - Use `APP_TYPE=worker` for background execution mode.
+# - Fail fast on unknown modes to prevent ambiguous runtime state.
 #
 # -----------------------------------------------------------------------------
 

@@ -13,7 +13,20 @@ from dotenv import load_dotenv, find_dotenv
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Centralizes environment-driven runtime configuration for API and worker modes.
+# Centralized environment-to-runtime configuration adapter.
+#
+# Responsibilities:
+# - Load `.env` for local development convenience.
+# - Convert string environment values to typed config values.
+# - Produce one configuration dictionary for API and worker runtimes.
+#
+# Scope boundaries:
+# - No business logic, external I/O, or side effects beyond dotenv loading.
+# - Keep defaults explicit and conservative.
+#
+# Operational guidance:
+# - Treat returned dict as immutable runtime input in downstream modules.
+# - Add new config keys here before using them in app/worker code.
 #
 # -----------------------------------------------------------------------------
 

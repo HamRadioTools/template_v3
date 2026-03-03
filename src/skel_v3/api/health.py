@@ -12,7 +12,20 @@ from flask import jsonify
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Exposes lightweight liveness/readiness endpoints for orchestration probes.
+# Operational health surface for orchestrators and load balancers.
+#
+# Responsibilities:
+# - Register `/health` for process liveness checks.
+# - Register `/ready` for readiness checks and future dependency gating.
+# - Return stable, cheap JSON responses suitable for high probe frequency.
+#
+# Scope boundaries:
+# - No network or datastore calls by default.
+# - No business-domain behavior should be coupled to health endpoints.
+#
+# Extension guidance:
+# - Add deeper readiness checks gradually and keep them deterministic.
+# - Preserve fast execution to avoid cascading probe failures.
 #
 # -----------------------------------------------------------------------------
 

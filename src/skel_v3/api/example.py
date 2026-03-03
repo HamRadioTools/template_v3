@@ -15,7 +15,19 @@ from flask import jsonify
 # -----------------------------------------------------------------------------
 #
 # Module design notes:
-# Provides a minimal example endpoint to illustrate route module structure.
+# Reference example for organizing API route modules.
+#
+# Responsibilities:
+# - Register a minimal endpoint that proves route wiring and JSON response flow.
+# - Demonstrate optional datastore dependency access in a safe way.
+#
+# Scope boundaries:
+# - This module is illustrative and intentionally domain-neutral.
+# - No authentication, persistence writes, or complex validation here.
+#
+# Extension guidance:
+# - Use this file as a template for new route modules.
+# - Keep endpoint registration and module-local helpers close together.
 #
 # -----------------------------------------------------------------------------
 
